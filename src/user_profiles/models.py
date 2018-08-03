@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 class UserProfileManager(BaseUserManager):
 
@@ -26,6 +27,7 @@ class UserProfileManager(BaseUserManager):
         user.save(using = self._db)
         return user
 
+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/avatars/user_<id>/<filename>
     print('>>> instance.id: ', instance.id)
@@ -35,18 +37,20 @@ def user_directory_path(instance, filename):
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length = 255, unique = True)
     username = models.CharField(max_length = 255, unique = True)
-    first_name = models.CharField(max_length = 255, blank=True)
-    last_name = models.CharField(max_length = 255, blank=True)
+    first_name = models.CharField(verbose_name = 'first name', max_length = 30, blank = True)
+    last_name = models.CharField(verbose_name = 'last name', max_length = 150, blank = True)
     is_active = models.BooleanField(default = False)
     is_superuser = models.BooleanField(default = False)
     is_staff = models.BooleanField(default = False)
-    user_image = models.ImageField(upload_to=user_directory_path, default = None, blank=True)
-    date_registered = models.DateTimeField(auto_now_add = True)
-    date_updated = models.DateTimeField(auto_now = True)
+    user_image = models.ImageField(upload_to = user_directory_path, default = None, blank = True)
+    date_joined = models.DateTimeField(default = timezone.now)
+    created = models.DateTimeField(auto_now_add = True, blank=True)
+    modified = models.DateTimeField(auto_now = True)
 
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'username'
+    EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = [
         'email'
     ]
@@ -55,14 +59,13 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Returns full user name."""
         name = ''
         if self.first_name:
-          name += self.first_name
+            name += self.first_name
         if self.last_name:
-          name += (' ' + self.last_name)
+            name += (' ' + self.last_name)
         return name
 
     def __str__(self):
-      if not self.get_fullname():
-        return self.username
-      else:
-        return self.get_fullname()
-
+        if not self.get_fullname():
+            return self.username
+        else:
+            return self.get_fullname()
