@@ -35,12 +35,12 @@ def user_directory_path(instance, filename):
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length = 255, unique = True)
     username = models.CharField(max_length = 255, unique = True)
-    first_name = models.CharField(max_length = 255)
-    last_name = models.CharField(max_length = 255)
+    first_name = models.CharField(max_length = 255, blank=True)
+    last_name = models.CharField(max_length = 255, blank=True)
     is_active = models.BooleanField(default = False)
     is_superuser = models.BooleanField(default = False)
     is_staff = models.BooleanField(default = False)
-    user_image = models.ImageField(upload_to=user_directory_path, default = None)
+    user_image = models.ImageField(upload_to=user_directory_path, default = None, blank=True)
     date_registered = models.DateTimeField(auto_now_add = True)
     date_updated = models.DateTimeField(auto_now = True)
 
@@ -53,7 +53,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     def get_fullname(self):
         """Returns full user name."""
-        return self.first_name + ' ' + self.last_name
+        name = ''
+        if self.first_name:
+          name += self.first_name
+        if self.last_name:
+          name += (' ' + self.last_name)
+        return name
 
     def __str__(self):
+      if not self.get_fullname():
+        return self.username
+      else:
         return self.get_fullname()
+
