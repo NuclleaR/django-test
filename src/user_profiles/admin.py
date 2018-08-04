@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 
-from .models import UserProfile
+from .models import UserProfile, ProfileFeedItem
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -25,3 +25,4 @@ class MyUserAdmin(UserAdmin):
 
 
 admin.site.register(UserProfile, MyUserAdmin)
+admin.site.register(ProfileFeedItem)
