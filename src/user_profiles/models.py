@@ -57,12 +57,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     def get_fullname(self):
         """Returns full user name."""
-        name = ''
-        if self.first_name:
-            name += self.first_name
-        if self.last_name:
-            name += (' ' + self.last_name)
-        return name
+        return '{0} {1}'.format(self.first_name, self.last_name).strip()
 
     def __str__(self):
         if not self.get_fullname():

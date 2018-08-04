@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 ENV=$1
 source $ENV/bin/activate
 
