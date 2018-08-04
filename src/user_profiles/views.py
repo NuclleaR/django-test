@@ -3,17 +3,18 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet, ViewSet
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .permissions import UpdateOwnProfilePermission
-from .serializers import UserProfileSerializer
-from .models import UserProfile
+from . import permissions
+from . import serializers
+from . import models
 
 
 class UserProfileViewSet(ModelViewSet):
-    serializer_class = UserProfileSerializer
-    queryset = UserProfile.objects.all()
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (UpdateOwnProfilePermission,)
+    permission_classes = (permissions.UpdateOwnProfilePermission,)
     filter_backends = (SearchFilter,)
     search_fields = ('email', 'username', 'first_name', 'last_name')
 
@@ -23,3 +24,13 @@ class LoginViewSet(ViewSet):
 
     def create(self, request):
         return ObtainAuthToken().post(request)
+
+
+class ProfileFeedItemViewSet(ModelViewSet):
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.PostOwnStatus, IsAuthenticatedOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user_profile = self.request.user)
