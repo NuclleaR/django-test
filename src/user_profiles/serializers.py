@@ -10,7 +10,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'id',
             'email',
             'username',
+            'first_name',
+            'last_name',
             'password',
+            'is_active',
+            'user_image'
         )
         extra_kwargs = {
             'password': {
