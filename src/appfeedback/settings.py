@@ -22,16 +22,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
-    'user_profiles',
+    'rest_framework.authtoken',  # todo  remove this
+    'oauth2_provider',
+    # 'user_profiles',
+    # 'profiles',
+    'achievements.apps.AchievementsConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.BasicAuthentication',
-#         'rest_framework.authentication.SessionAuthentication',
-#     )
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -43,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'profiles.urls'
+ROOT_URLCONF = 'appfeedback.urls'
 
 TEMPLATES = [
     {
@@ -61,9 +66,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'profiles.wsgi.application'
+WSGI_APPLICATION = 'appfeedback.wsgi.application'
 
-AUTH_USER_MODEL = 'user_profiles.UserProfile'
+AUTH_USER_MODEL = 'profiles.UserProfile'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
