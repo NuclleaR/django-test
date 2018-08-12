@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from profiles.views import LogoutView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('profiles.urls')),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('auth/', include('social_django.urls', namespace='social')),
+    path('auth/logout/', LogoutView.as_view(), name = 'logout'),
 ]

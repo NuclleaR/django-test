@@ -10,16 +10,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = (
             'email',
-            'name'
-            'first_name',
-            'last_name',
+            'username',
+            'fullname',
+            # 'first_name',
+            # 'last_name',
             'img_url',
         )
         read_only_fields = (
             'email',
-            'name'
-            'first_name',
-            'last_name',
+            'username',
+            'fullname',
+            # 'first_name',
+            # 'last_name',
             'img_url',
         )
 

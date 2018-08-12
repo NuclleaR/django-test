@@ -3,15 +3,20 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from social_django.models import AbstractUserSocialAuth, USER_MODEL, DjangoStorage
+
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, password=None):
+    def create_user(self, email, password=None, **kwargs):
         if not email:
             raise ValueError('User must have an email')
 
         mail = self.normalize_email(email)
-        user = self.model(email = mail)
+        if not kwargs:
+            user = self.model(email = mail)
+        else:
+            user = self.model(email = mail, **kwargs)
         user.set_password(password)
         user.is_active = True
         user.save(using = self._db)
@@ -25,17 +30,18 @@ class UserManager(BaseUserManager):
         user.save(using = self._db)
         return user
 
-    def get_by_natural_key(self, email):
-        return self.get(**{self.model.USERNAME_FIELD: email})
-
 
 # class UserProfile(models.Model):
 class UserProfile(AbstractBaseUser, PermissionsMixin):
+
+    username = models.CharField(max_length = 255, unique = True, blank = False)
+    # uid
     email = models.EmailField(unique = True, blank = False)
-    name = models.CharField(max_length = 255)
+    fullname = models.CharField(max_length = 255)
     first_name = models.CharField(max_length = 255)
     last_name = models.CharField(max_length = 255)
     img_url = models.URLField()
+    gender = models.CharField(max_length = 10)
     date_joined = models.DateTimeField(default = timezone.now)
     is_superuser = models.BooleanField(default = False)
     is_staff = models.BooleanField(
@@ -60,7 +66,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def get_full_name(self):
-        return self.email
+        return self.fullname
 
     def get_short_name(self):
-        return self.email
+        return self.username
+
+
+# class CustomUserSocialAuth(AbstractUserSocialAuth):
+#     user = models.ForeignKey(USER_MODEL, related_name='custom_social_auth',
+#                              on_delete=models.CASCADE)
+#
+#
+# class CustomDjangoStorage(DjangoStorage):
+#     user = CustomUserSocialAuth
