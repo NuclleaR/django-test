@@ -1,4 +1,5 @@
 from django.conf.global_settings import SESSION_COOKIE_NAME, SESSION_COOKIE_PATH, SESSION_COOKIE_DOMAIN
+from django.contrib.auth import logout
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from rest_framework import permissions, generics
@@ -20,10 +21,10 @@ class UserProfileViewSet(ModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ('email', 'fullname', 'img_url')
 
-    def list(self, request, *args, **kwargs):
-        _list = super(ModelViewSet, self).list(request, *args, **kwargs)
-        print(_list)
-        return _list
+    # def list(self, request, *args, **kwargs):
+    #     _list = super(ModelViewSet, self).list(request, *args, **kwargs)
+    #     print(_list)
+    #     return _list
 
 
 class LogoutView(APIView):
@@ -31,11 +32,12 @@ class LogoutView(APIView):
     def get(self, request):
         print(request.COOKIES[SESSION_COOKIE_NAME])
         response = HttpResponseRedirect(redirect_to = '/')
-        response.delete_cookie(
-            SESSION_COOKIE_NAME,
-            path = SESSION_COOKIE_PATH,
-            domain = SESSION_COOKIE_DOMAIN,
-        )
+        # response.delete_cookie(
+        #     SESSION_COOKIE_NAME,
+        #     path = SESSION_COOKIE_PATH,
+        #     domain = SESSION_COOKIE_DOMAIN,
+        # )
+        logout(request)
         return response
 
 

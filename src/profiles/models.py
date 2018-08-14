@@ -30,6 +30,9 @@ class UserManager(BaseUserManager):
         user.save(using = self._db)
         return user
 
+    # def update(self, **kwargs):
+    #     pass
+
 
 # class UserProfile(models.Model):
 class UserProfile(AbstractBaseUser, PermissionsMixin):
@@ -61,6 +64,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     # EMAIL_FIELD = 'email'
+    # REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email

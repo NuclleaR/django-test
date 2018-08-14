@@ -22,3 +22,8 @@ def create_social_user(backend, response, social, *args, **kwargs):
         return {'profile': user}
     # else:
     #     raise ValueError('User must have domain Provectus')
+
+
+def auth_allowed(backend, details, response, *args, **kwargs):
+    if not backend.auth_allowed(response, details):
+        raise ValueError('AuthForbidden(backend)')
